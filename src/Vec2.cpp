@@ -30,7 +30,7 @@ Vec2 Vec2::normalized() const {
         Vec2 answ(x_ / length(), y_ / length());
         return answ;
     }
-    std::invalid_argument("vector has zero length");
+    throw std::invalid_argument("vector has zero length");
     
 }
 
