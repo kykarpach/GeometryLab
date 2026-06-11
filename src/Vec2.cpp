@@ -26,12 +26,11 @@ double Vec2::length2() const {
 }
 
 Vec2 Vec2::normalized() const {
-    if(x_ == 0 && y_ == 0){
+    if(x_ != 0 && y_ != 0){
         Vec2 answ(x_ / length(), y_ / length());
         return answ;
     }
     throw std::invalid_argument("vector has zero length");
-    
 }
 
 double Vec2::dot(const Vec2& other) const {
@@ -128,16 +127,16 @@ Vec2 operator/(const Vec2& v, double k){
 
 // Операторы ввода и вывода
 std::istream& operator>>(std::istream& in, Vec2& v) {
-    double x, y;
-    char dummy;
+    double x;
+    double y;
 
-    in >> x >> dummy;
-    in >> y >> dummy;
-
-    v = Vec2(x, y);
+    if (in >> x >> y) {
+        v = Vec2(x, y);
+    }
 
     return in;
 }
+
 std::ostream& operator<<(std::ostream& out, const Vec2& v) {
     out << "coordinate: (" << v.x() << ", " << v.y() << ") \n";
     return out;
