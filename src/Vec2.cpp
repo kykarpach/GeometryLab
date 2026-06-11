@@ -26,7 +26,7 @@ double Vec2::length2() const {
 }
 
 Vec2 Vec2::normalized() const {
-    if(x_ != 0 && y_ != 0){
+    if(x_ == 0 && y_ == 0){
         Vec2 answ(x_ / length(), y_ / length());
         return answ;
     }
@@ -96,7 +96,7 @@ Vec2& Vec2::operator/=(double k) {
         y_ /= k;
         return *this;
     }
-    std::invalid_argument("you can't divide by zero");
+    throw std::invalid_argument("you can't divide by zero");
 }
 
 // Бинарные
@@ -123,14 +123,7 @@ Vec2 operator/(const Vec2& v, double k){
         Vec2 answ(v.x() / k, v.y() / k);
         return answ;
     }
-    std::invalid_argument("you can't divide by zero");
-}
-Vec2 operator/(double k, const Vec2& v) {
-    if(k != 0){
-        Vec2 answ(v.x() / k, v.y() / k);
-        return answ;
-    }
-    std::invalid_argument("you can't divide by zero");
+    throw std::invalid_argument("you can't divide by zero");
 }
 
 // Операторы ввода и вывода

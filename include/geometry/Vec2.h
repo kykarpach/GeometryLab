@@ -46,8 +46,6 @@ Vec2 operator*(const Vec2& v, double k);//
 Vec2 operator*(double k, const Vec2& v);//
 
 Vec2 operator/(const Vec2& v, double k);//
-Vec2 operator/(double k, const Vec2& v);//
-
 
 std::ostream& operator<<(std::ostream& os, const Vec2& v);
 std::istream& operator>>(std::istream& is, Vec2& v);
