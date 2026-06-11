@@ -26,7 +26,7 @@ double Vec2::length2() const {
 }
 
 Vec2 Vec2::normalized() const {
-    if(x_ != 0 && y_ != 0){
+    if(length != 0){
         Vec2 answ(x_ / length(), y_ / length());
         return answ;
     }
