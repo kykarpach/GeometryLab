@@ -3,12 +3,6 @@
 
 namespace geom {
 
-class Vec2
-{
-private:
-    double x_;
-    double y_;
-public:
 
     Vec2(): x_(0), y_(0) {}
     Vec2(double x, double y): x_(x), y_(y) {}
@@ -61,7 +55,7 @@ public:
         }
     }
 
-//  Унарныые +  b -
+    //  Унарныые +  b -
     Vec2 operator+() const{
         Vec2 answ = *this; //Через конструктор копирования а не через конструктор
         return answ;
@@ -70,7 +64,7 @@ public:
         Vec2 answ = -(*this);//Через конструктор копирования а не через конструктор
         return answ;
     }
-//----------------------------
+    //----------------------------
 
     Vec2& operator+=(const Vec2& other){
         x_ += other.x();
@@ -94,53 +88,55 @@ public:
         return *this;
     }
 
-};
 
-// Бинарные------------------
-Vec2 operator + (const Vec2& v1, const Vec2& v2){
-    Vec2 answ(v1.x() + v2.x(), v1.y() + v2.y());
-    return answ;
-}
-Vec2 operator - (const Vec2& v1, const Vec2& v2){
-    Vec2 answ(v1.x() - v2.x(), v1.y() - v2.y());
-    return answ;
-}
 
-Vec2 operator*(const Vec2& v, double k){
-    Vec2 answ (v.x()*k, v.y()*k);
-    return answ;
-}
-Vec2 operator*(double k, const Vec2& v){
-    Vec2 answ (v.x()*k, v.y()*k);
-    return answ;
-}
+    // Бинарные------------------
+    Vec2 operator + (const Vec2& v1, const Vec2& v2){
+        Vec2 answ(v1.x() + v2.x(), v1.y() + v2.y());
+        return answ;
+    }
+    Vec2 operator - (const Vec2& v1, const Vec2& v2){
+        Vec2 answ(v1.x() - v2.x(), v1.y() - v2.y());
+        return answ;
+    }
 
-Vec2 operator/(const Vec2& v, double k){
-    Vec2 answ (v.x()/k, v.y()/k);
-    return answ;
-}
-Vec2 operator/(double k, const Vec2& v){
-    Vec2 answ (v.x()/k, v.y()/k);
-    return answ;
-}
-//----------------------------
+    Vec2 operator*(const Vec2& v, double k){
+        Vec2 answ (v.x()*k, v.y()*k);
+        return answ;
+    }
+    Vec2 operator*(double k, const Vec2& v){
+        Vec2 answ (v.x()*k, v.y()*k);
+        return answ;
+    }
 
-//Операторы ВВОДА и ВЫВОДА
+    Vec2 operator/(const Vec2& v, double k){
+        Vec2 answ (v.x()/k, v.y()/k);
+        return answ;
+    }
+    Vec2 operator/(double k, const Vec2& v){
+        Vec2 answ (v.x()/k, v.y()/k);
+        return answ;
+    }
+    //----------------------------
 
-std::istream& operator >> (std::istream& in, Vec2& v){
-    double x, y;
-    char dummy;
+    //Операторы ВВОДА и ВЫВОДА
 
-    in >> x >> dummy;
-    in >> y >> dummy;
+    std::istream& operator >> (std::istream& in, Vec2& v){
+        double x, y;
+        char dummy;
 
-    v = Vec2(x, y);
+        in >> x >> dummy;
+        in >> y >> dummy;
 
-    return in;
-};
-std::ostream& operator << (std::ostream& out, const Vec2& v){
+        v = Vec2(x, y);
 
-    out << "coordinate: (" << v.x() << ", " << v.y() << ") \n"; 
+        return in;
+    };
+    std::ostream& operator << (std::ostream& out, const Vec2& v){
 
-    return out;
+        out << "coordinate: (" << v.x() << ", " << v.y() << ") \n"; 
+
+        return out;
+    };
+
 };
