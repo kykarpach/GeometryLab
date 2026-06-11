@@ -6,25 +6,26 @@
 
 namespace geom {
 
+// Конструкторы
 Vec2::Vec2(): x_(0), y_(0) {}
 Vec2::Vec2(double x, double y): x_(x), y_(y) {}
 
 double Vec2::x() const {
     return x_;
 }
-
 double Vec2::y() const {
     return y_;
 }
 
+//Длинна отрезка
 double Vec2::length() const {
     return std::sqrt(x_ * x_ + y_ * y_);
 }
-
+//Длинна отрезка в квадрате
 double Vec2::length2() const {
     return x_ * x_ + y_ * y_;
 }
-
+//коллинеарный вектор но единичный
 Vec2 Vec2::normalized() const {
     if(length != 0){
         Vec2 answ(x_ / length(), y_ / length());
@@ -32,11 +33,11 @@ Vec2 Vec2::normalized() const {
     }
     throw std::invalid_argument("vector has zero length");
 }
-
+//скалярное произведение
 double Vec2::dot(const Vec2& other) const {
     return x_ * (other.x_) + y_ * (other.y_);
 }
-
+//векторное произведение
 double Vec2::cross(const Vec2& other) const {
     return x_ * (other.y_) - y_ * (other.x_);
 }
