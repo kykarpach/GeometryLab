@@ -144,4 +144,4 @@ std::ostream& operator<<(std::ostream& out, const Vec2& v) {
     return out;
 }
 
-} // namespace geom
+} 

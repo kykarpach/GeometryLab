@@ -1,5 +1,6 @@
 #include "geometry/Vec2.h"
-
+#include "geometry/Vec3.h"
+#include "geometry/Epsilon.h"
 #include <iostream>
 
 int main() {

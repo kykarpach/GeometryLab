@@ -7,7 +7,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_library(geometry
     src/Vec2.cpp
+    src/Vec3.cpp
 )
+
 
 target_include_directories(geometry PUBLIC include)
 
