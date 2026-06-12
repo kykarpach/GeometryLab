@@ -1,7 +1,7 @@
 // Тест создан нейросетью. Автор проекта не ручается за полноту и идеальную корректность этих тестов.
 
 #include "geometry/Vec2.h"
-
+#include "geometry/Epsilon.h"
 #include <cassert>
 #include <cmath>
 #include <sstream>

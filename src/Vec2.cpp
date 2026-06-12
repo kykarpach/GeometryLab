@@ -1,4 +1,5 @@
 #include "geometry/Vec2.h"
+#include "geometry/Epsilon.h"
 #include <iostream>
 #include <cmath>
 #include <stdexcept>
@@ -27,7 +28,7 @@ double Vec2::length2() const {
 }
 //коллинеарный вектор но единичный
 Vec2 Vec2::normalized() const {
-    if(length != 0){
+    if( ! ( is_zero(length()) )){// Длинна не ноль? - да, не ноль, работаем
         Vec2 answ(x_ / length(), y_ / length());
         return answ;
     }
@@ -91,7 +92,7 @@ Vec2& Vec2::operator*=(double k) {
     return *this;
 }
 Vec2& Vec2::operator/=(double k) {
-    if (k != 0){
+    if (!(is_zero(k))){
         x_ /= k;
         y_ /= k;
         return *this;
@@ -119,7 +120,7 @@ Vec2 operator*(double k, const Vec2& v) {
 }
 
 Vec2 operator/(const Vec2& v, double k){
-    if(k != 0){
+    if(!(is_zero(k))){
         Vec2 answ(v.x() / k, v.y() / k);
         return answ;
     }
