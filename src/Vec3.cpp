@@ -29,15 +29,7 @@ double Vec3::dot(const Vec3& other) const{
 }
 
 Vec3 Vec3::cross(const Vec3& other) const{
-    
-    if( ! (is_zero(length()) || is_zero(other.length()) )){
-        return Vec3(y_*other.z_ - z_*other.y_,
-         z_*other.x_ - x_*other.z_,
-          x_*other.y_ - y_*other.x_);
-    }
-    
-    throw std::invalid_argument("vector has a zero length");
-
+    return Vec3(y_*other.z_ - z_*other.y_, z_*other.x_ - x_*other.z_, x_*other.y_ - y_*other.x_);
 }
 
 Vec3 Vec3::normalized() const{
@@ -59,7 +51,7 @@ double& Vec3::operator[](std::size_t index){
         return z_;        
     }
     else{
-        throw std::invalid_argument("Invalid index");
+        throw std::out_of_range("Invalid index");
     }
 }
 const double& Vec3::operator[](std::size_t index) const{
@@ -96,24 +88,28 @@ Vec3 Vec3::operator*(double k) const{
     return Vec3(x_*k, y_*k, z_*k);
 }
 Vec3 Vec3::operator/(double k) const{
-    return Vec3(x_/k, y_/k, z_/k);
+    if(!is_zero(k)){
+        return Vec3(x_/k, y_/k, z_/k);
+    }
+    else{throw std::invalid_argument("you can't divide by zero");}
+    
 }
 
 Vec3& Vec3::operator+=(const Vec3& other){
-    *this + other;
+    *this = *this + other;
     return *this;
 }
 Vec3& Vec3::operator-=(const Vec3& other){
-    *this - other;
+    *this = *this - other;
     return *this;
 }
 
 Vec3& Vec3::operator*=(double k){
-    *this * k;
+    *this = *this * k;
     return *this;
 }
 Vec3& Vec3::operator/=(double k){
-    *this / k;
+    *this = *this / k;
     return *this;
 }
 
@@ -132,7 +128,7 @@ std::istream& operator>>(std::istream& in, Vec3& v){
 }
 std::ostream& operator<<(std::ostream& out , const Vec3& v){
 
-    out << "coordinat: " << v.x() << ", " << v.y() << ", " << v.z() << "}" << "\n";
+    out << "coordinates: ()" << v.x() << ", " << v.y() << ", " << v.z() << ")";
 
     return out; 
 }

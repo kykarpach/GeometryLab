@@ -6,6 +6,7 @@
 #include <cmath>
 #include <sstream>
 #include <stdexcept>
+#include "geometry/Vec3.h"
 
 bool nearly_equal(double a, double b, double eps = 1e-9) {
     return std::abs(a - b) < eps;
@@ -194,6 +195,205 @@ int main() {
         assert(input.fail());
         assert(nearly_equal(v.x(), 1.0));
         assert(nearly_equal(v.y(), 2.0));
+    }
+
+        // Vec3: конструкторы и координаты
+    {
+        geom::Vec3 v;
+        assert(nearly_equal(v.x(), 0.0));
+        assert(nearly_equal(v.y(), 0.0));
+        assert(nearly_equal(v.z(), 0.0));
+    }
+
+    {
+        geom::Vec3 v(1.0, 2.0, 3.0);
+        assert(nearly_equal(v.x(), 1.0));
+        assert(nearly_equal(v.y(), 2.0));
+        assert(nearly_equal(v.z(), 3.0));
+    }
+
+    // Vec3: длина
+    {
+        geom::Vec3 v(3.0, 4.0, 12.0);
+        assert(nearly_equal(v.length2(), 169.0));
+        assert(nearly_equal(v.length(), 13.0));
+    }
+
+    // Vec3: dot
+    {
+        geom::Vec3 a(1.0, 2.0, 3.0);
+        geom::Vec3 b(4.0, 5.0, 6.0);
+
+        assert(nearly_equal(a.dot(b), 32.0));
+    }
+
+    // Vec3: cross
+    {
+        geom::Vec3 x(1.0, 0.0, 0.0);
+        geom::Vec3 y(0.0, 1.0, 0.0);
+
+        geom::Vec3 z = x.cross(y);
+
+        assert(nearly_equal(z.x(), 0.0));
+        assert(nearly_equal(z.y(), 0.0));
+        assert(nearly_equal(z.z(), 1.0));
+    }
+
+    // Vec3: normalized
+    {
+        geom::Vec3 v(0.0, 3.0, 4.0);
+        geom::Vec3 n = v.normalized();
+
+        assert(nearly_equal(n.x(), 0.0));
+        assert(nearly_equal(n.y(), 0.6));
+        assert(nearly_equal(n.z(), 0.8));
+        assert(nearly_equal(n.length(), 1.0));
+    }
+
+    // Vec3: operator[]
+    {
+        geom::Vec3 v(1.0, 2.0, 3.0);
+
+        assert(nearly_equal(v[0], 1.0));
+        assert(nearly_equal(v[1], 2.0));
+        assert(nearly_equal(v[2], 3.0));
+
+        v[0] = 10.0;
+        v[1] = 20.0;
+        v[2] = 30.0;
+
+        assert(nearly_equal(v.x(), 10.0));
+        assert(nearly_equal(v.y(), 20.0));
+        assert(nearly_equal(v.z(), 30.0));
+    }
+
+    // Vec3: некорректный индекс
+    {
+        geom::Vec3 v(1.0, 2.0, 3.0);
+        bool thrown = false;
+
+        try {
+            v[3];
+        } catch (const std::exception&) {
+            thrown = true;
+        }
+
+        assert(thrown);
+    }
+
+    // Vec3: сложение и вычитание
+    {
+        geom::Vec3 a(1.0, 2.0, 3.0);
+        geom::Vec3 b(4.0, 5.0, 6.0);
+
+        geom::Vec3 sum = a + b;
+        assert(nearly_equal(sum.x(), 5.0));
+        assert(nearly_equal(sum.y(), 7.0));
+        assert(nearly_equal(sum.z(), 9.0));
+
+        geom::Vec3 diff = b - a;
+        assert(nearly_equal(diff.x(), 3.0));
+        assert(nearly_equal(diff.y(), 3.0));
+        assert(nearly_equal(diff.z(), 3.0));
+    }
+
+    // Vec3: умножение и деление
+    {
+        geom::Vec3 v(2.0, 4.0, 6.0);
+
+        geom::Vec3 a = v * 2.0;
+        assert(nearly_equal(a.x(), 4.0));
+        assert(nearly_equal(a.y(), 8.0));
+        assert(nearly_equal(a.z(), 12.0));
+
+        geom::Vec3 b = 2.0 * v;
+        assert(nearly_equal(b.x(), 4.0));
+        assert(nearly_equal(b.y(), 8.0));
+        assert(nearly_equal(b.z(), 12.0));
+
+        geom::Vec3 c = v / 2.0;
+        assert(nearly_equal(c.x(), 1.0));
+        assert(nearly_equal(c.y(), 2.0));
+        assert(nearly_equal(c.z(), 3.0));
+    }
+
+    // Vec3: составные операторы
+    {
+        geom::Vec3 v(1.0, 2.0, 3.0);
+
+        v += geom::Vec3(1.0, 1.0, 1.0);
+        assert(nearly_equal(v.x(), 2.0));
+        assert(nearly_equal(v.y(), 3.0));
+        assert(nearly_equal(v.z(), 4.0));
+
+        v -= geom::Vec3(1.0, 1.0, 1.0);
+        assert(nearly_equal(v.x(), 1.0));
+        assert(nearly_equal(v.y(), 2.0));
+        assert(nearly_equal(v.z(), 3.0));
+
+        v *= 2.0;
+        assert(nearly_equal(v.x(), 2.0));
+        assert(nearly_equal(v.y(), 4.0));
+        assert(nearly_equal(v.z(), 6.0));
+
+        v /= 2.0;
+        assert(nearly_equal(v.x(), 1.0));
+        assert(nearly_equal(v.y(), 2.0));
+        assert(nearly_equal(v.z(), 3.0));
+    }
+
+    // Vec3: нормализация нулевого вектора
+    {
+        geom::Vec3 v(0.0, 0.0, 0.0);
+        bool thrown = false;
+
+        try {
+            v.normalized();
+        } catch (const std::invalid_argument&) {
+            thrown = true;
+        }
+
+        assert(thrown);
+    }
+
+    // Vec3: деление на ноль
+    {
+        geom::Vec3 v(1.0, 2.0, 3.0);
+        bool thrown = false;
+
+        try {
+            v / 0.0;
+        } catch (const std::invalid_argument&) {
+            thrown = true;
+        }
+
+        assert(thrown);
+    }
+
+    // Vec3: потоковый ввод
+    {
+        std::istringstream input("5 6 7");
+        geom::Vec3 v;
+
+        input >> v;
+
+        assert(!input.fail());
+        assert(nearly_equal(v.x(), 5.0));
+        assert(nearly_equal(v.y(), 6.0));
+        assert(nearly_equal(v.z(), 7.0));
+    }
+
+    // Vec3: некорректный потоковый ввод
+    {
+        std::istringstream input("abc 6 7");
+        geom::Vec3 v(1.0, 2.0, 3.0);
+
+        input >> v;
+
+        assert(input.fail());
+        assert(nearly_equal(v.x(), 1.0));
+        assert(nearly_equal(v.y(), 2.0));
+        assert(nearly_equal(v.z(), 3.0));
     }
 
     return 0;
