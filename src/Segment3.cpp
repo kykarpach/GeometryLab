@@ -3,7 +3,6 @@
 
 namespace geom{
 
-
 Segment3::Segment3(){}
 Segment3::Segment3(const Vec3& v1, const Vec3& v2): start_(v1), end_(v2) {}
 
@@ -43,18 +42,6 @@ bool Segment3::contains_point(const Vec3& p) const{
 
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }//namespace geom

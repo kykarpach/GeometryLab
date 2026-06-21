@@ -1,4 +1,5 @@
 // Тест создан нейросетью. Автор проекта не ручается за полноту и идеальную корректность этих тестов.
+#include "geometry/Segment3.h"
 #include "geometry/Segment2.h"
 #include "geometry/Vec2.h"
 #include "geometry/Epsilon.h"
@@ -9,6 +10,51 @@
 #include "geometry/Vec3.h"
 
 using namespace geom;
+
+void test_segment3() {
+    using namespace geom;
+
+    Segment3 segment(Vec3(1.0, 2.0, 3.0), Vec3(4.0, 6.0, 15.0));
+
+    assert(geom::nearly_equal(segment.start().x(), 1.0));
+    assert(geom::nearly_equal(segment.start().y(), 2.0));
+    assert(geom::nearly_equal(segment.start().z(), 3.0));
+
+    assert(geom::nearly_equal(segment.end().x(), 4.0));
+    assert(geom::nearly_equal(segment.end().y(), 6.0));
+    assert(geom::nearly_equal(segment.end().z(), 15.0));
+
+    Vec3 direction = segment.direction();
+    assert(geom::nearly_equal(direction.x(), 3.0));
+    assert(geom::nearly_equal(direction.y(), 4.0));
+    assert(geom::nearly_equal(direction.z(), 12.0));
+
+    assert(geom::nearly_equal(segment.length(), 13.0));
+    assert(geom::nearly_equal(segment.length2(), 169.0));
+    assert(!segment.is_degenerate());
+
+    Segment3 diagonal(
+        Vec3(0.0, 0.0, 0.0),
+        Vec3(4.0, 4.0, 4.0)
+    );
+
+    assert(diagonal.contains_point(Vec3(2.0, 2.0, 2.0)));
+    assert(diagonal.contains_point(Vec3(0.0, 0.0, 0.0)));
+    assert(diagonal.contains_point(Vec3(4.0, 4.0, 4.0)));
+
+    assert(!diagonal.contains_point(Vec3(5.0, 5.0, 5.0)));
+    assert(!diagonal.contains_point(Vec3(-1.0, -1.0, -1.0)));
+    assert(!diagonal.contains_point(Vec3(2.0, 2.0, 3.0)));
+
+    Segment3 degenerate(
+        Vec3(2.0, 3.0, 4.0),
+        Vec3(2.0, 3.0, 4.0)
+    );
+
+    assert(degenerate.is_degenerate());
+    assert(degenerate.contains_point(Vec3(2.0, 3.0, 4.0)));
+    assert(!degenerate.contains_point(Vec3(2.0, 3.0, 5.0)));
+}
 
 void test_segment2() {
 
@@ -45,6 +91,7 @@ void test_segment2() {
 
 int main() {
 
+    test_segment3();
     test_segment2();
     // Конструкторы и доступ к координатам
     {
