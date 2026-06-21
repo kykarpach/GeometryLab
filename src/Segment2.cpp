@@ -47,8 +47,4 @@ bool Segment2::contains_point(const Vec2& p) const{
 }
 
 
-
-
-
-
 }//namespace geom
