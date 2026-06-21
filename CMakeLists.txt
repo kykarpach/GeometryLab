@@ -8,6 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_library(geometry
     src/Vec2.cpp
     src/Vec3.cpp
+    src/Segment2.cpp
 )
 
 

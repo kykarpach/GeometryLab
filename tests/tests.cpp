@@ -1,5 +1,5 @@
 // Тест создан нейросетью. Автор проекта не ручается за полноту и идеальную корректность этих тестов.
-
+#include "geometry/Segment2.h"
 #include "geometry/Vec2.h"
 #include "geometry/Epsilon.h"
 #include <cassert>
@@ -8,11 +8,44 @@
 #include <stdexcept>
 #include "geometry/Vec3.h"
 
-bool nearly_equal(double a, double b, double eps = 1e-9) {
-    return std::abs(a - b) < eps;
+using namespace geom;
+
+void test_segment2() {
+
+    Segment2 segment(Vec2(1.0, 2.0), Vec2(4.0, 6.0));
+
+    assert(nearly_equal(segment.start().x(), 1.0));
+    assert(nearly_equal(segment.start().y(), 2.0));
+    assert(nearly_equal(segment.end().x(), 4.0));
+    assert(nearly_equal(segment.end().y(), 6.0));
+
+    Vec2 direction = segment.direction();
+    assert(nearly_equal(direction.x(), 3.0));
+    assert(nearly_equal(direction.y(), 4.0));
+
+    assert(nearly_equal(segment.length(), 5.0));
+    assert(nearly_equal(segment.length2(), 25.0));
+    assert(!segment.is_degenerate());
+
+    Segment2 degenerate(Vec2(2.0, 2.0), Vec2(2.0, 2.0));
+    assert(degenerate.is_degenerate());
+    assert(degenerate.contains_point(Vec2(2.0, 2.0)));
+    assert(!degenerate.contains_point(Vec2(2.0, 3.0)));
+
+    Segment2 diagonal(Vec2(0.0, 0.0), Vec2(4.0, 4.0));
+
+    assert(diagonal.contains_point(Vec2(2.0, 2.0)));
+    assert(diagonal.contains_point(Vec2(0.0, 0.0)));
+    assert(diagonal.contains_point(Vec2(4.0, 4.0)));
+
+    assert(!diagonal.contains_point(Vec2(5.0, 5.0)));
+    assert(!diagonal.contains_point(Vec2(-1.0, -1.0)));
+    assert(!diagonal.contains_point(Vec2(2.0, 3.0)));
 }
 
 int main() {
+
+    test_segment2();
     // Конструкторы и доступ к координатам
     {
         geom::Vec2 v;
@@ -396,5 +429,14 @@ int main() {
         assert(nearly_equal(v.z(), 3.0));
     }
 
+
+    
+
+
+
     return 0;
+
+    
+
+
 }
