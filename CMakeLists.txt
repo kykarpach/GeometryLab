@@ -11,6 +11,8 @@ add_library(geometry
     src/Segment2.cpp
     src/Segment3.cpp
     src/Distance.cpp
+    src/IntersectionResult2.cpp
+    src/IntersectionResult3.cpp
 )
 
 

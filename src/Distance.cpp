@@ -41,7 +41,7 @@ double distance_point_segment(const Vec2& p, const Segment2& s){
     }
 
 }
-
+// Та же самоа функция, но для 3Д
 double distance_point_segment(const Vec3& p, const Segment3& s){
 
       // s - вырожденный в точку отрезок

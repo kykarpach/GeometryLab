@@ -1,4 +1,6 @@
 // Тест создан нейросетью. Автор проекта не ручается за полноту и идеальную корректность этих тестов.
+#include "geometry/IntersectionResult3.h"
+#include "geometry/IntersectionResult2.h"
 #include "geometry/Distance.h"
 #include "geometry/Segment3.h"
 #include "geometry/Segment2.h"
@@ -9,8 +11,73 @@
 #include <sstream>
 #include <stdexcept>
 #include "geometry/Vec3.h"
+#include <optional>
 
 using namespace geom;
+
+void test_intersection_result3() {
+    using namespace geom;
+
+    IntersectionResult3 none = IntersectionResult3::none();
+
+    assert(none.type == IntersectionType3::None);
+    assert(!none.point.has_value());
+    assert(!none.segment.has_value());
+
+    Vec3 p(2.0, 3.0, 4.0);
+    IntersectionResult3 point = IntersectionResult3::point_result(p);
+
+    assert(point.type == IntersectionType3::Point);
+    assert(point.point.has_value());
+    assert(!point.segment.has_value());
+    assert(geom::nearly_equal(point.point->x(), 2.0));
+    assert(geom::nearly_equal(point.point->y(), 3.0));
+    assert(geom::nearly_equal(point.point->z(), 4.0));
+
+    Segment3 s(Vec3(1.0, 1.0, 1.0), Vec3(4.0, 4.0, 4.0));
+    IntersectionResult3 segment = IntersectionResult3::segment_result(s);
+
+    assert(segment.type == IntersectionType3::Segment);
+    assert(!segment.point.has_value());
+    assert(segment.segment.has_value());
+    assert(geom::nearly_equal(segment.segment->start().x(), 1.0));
+    assert(geom::nearly_equal(segment.segment->start().y(), 1.0));
+    assert(geom::nearly_equal(segment.segment->start().z(), 1.0));
+    assert(geom::nearly_equal(segment.segment->end().x(), 4.0));
+    assert(geom::nearly_equal(segment.segment->end().y(), 4.0));
+    assert(geom::nearly_equal(segment.segment->end().z(), 4.0));
+}
+
+void test_intersection_result2() {
+    using namespace geom;
+
+    IntersectionResult2 none = IntersectionResult2::none();
+
+    assert(none.type == IntersectionType2::None);
+    assert(!none.point.has_value());
+    assert(!none.segment.has_value());
+
+    Vec2 p(2.0, 3.0);
+    IntersectionResult2 point = IntersectionResult2::point_result(p);
+
+    assert(point.type == IntersectionType2::Point);
+    assert(point.point.has_value());
+    assert(!point.segment.has_value());
+    assert(geom::nearly_equal(point.point->x(), 2.0));
+    assert(geom::nearly_equal(point.point->y(), 3.0));
+
+    Segment2 s(Vec2(1.0, 1.0), Vec2(4.0, 4.0));
+    IntersectionResult2 segment = IntersectionResult2::segment_result(s);
+
+    assert(segment.type == IntersectionType2::Segment);
+    assert(!segment.point.has_value());
+    assert(segment.segment.has_value());
+    assert(geom::nearly_equal(segment.segment->start().x(), 1.0));
+    assert(geom::nearly_equal(segment.segment->start().y(), 1.0));
+    assert(geom::nearly_equal(segment.segment->end().x(), 4.0));
+    assert(geom::nearly_equal(segment.segment->end().y(), 4.0));
+}
+
 
 void test_distance() {
 
@@ -159,7 +226,10 @@ void test_segment2() {
 }
 
 int main() {
-
+    
+    
+    test_intersection_result2();
+    test_intersection_result3();
     test_distance();
     test_segment3();
     test_segment2();
