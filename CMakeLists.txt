@@ -10,6 +10,7 @@ add_library(geometry
     src/Vec3.cpp
     src/Segment2.cpp
     src/Segment3.cpp
+    src/Distance.cpp
 )
 
 

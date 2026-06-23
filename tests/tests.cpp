@@ -1,4 +1,5 @@
 // Тест создан нейросетью. Автор проекта не ручается за полноту и идеальную корректность этих тестов.
+#include "geometry/Distance.h"
 #include "geometry/Segment3.h"
 #include "geometry/Segment2.h"
 #include "geometry/Vec2.h"
@@ -11,8 +12,76 @@
 
 using namespace geom;
 
+void test_distance() {
+
+    assert(geom::nearly_equal(distance(Vec2(0.0, 0.0), Vec2(3.0, 4.0)), 5.0));
+    assert(geom::nearly_equal(distance(Vec3(0.0, 0.0, 0.0), Vec3(1.0, 2.0, 2.0)), 3.0));
+
+    Segment2 horizontal2(Vec2(0.0, 0.0), Vec2(10.0, 0.0));
+
+    assert(geom::nearly_equal(distance_point_segment(Vec2(3.0, 4.0), horizontal2), 4.0));
+    assert(geom::nearly_equal(distance_point_segment(Vec2(0.0, 5.0), horizontal2), 5.0));
+    assert(geom::nearly_equal(distance_point_segment(Vec2(10.0, 5.0), horizontal2), 5.0));
+
+    assert(geom::nearly_equal(
+        distance_point_segment(Vec2(-3.0, 4.0), horizontal2),
+        5.0
+    ));
+
+    assert(geom::nearly_equal(
+        distance_point_segment(Vec2(13.0, 4.0), horizontal2),
+        5.0
+    ));
+
+    assert(geom::nearly_equal(
+        distance_point_segment(Vec2(5.0, 0.0), horizontal2),
+        0.0
+    ));
+
+    Segment2 degenerate2(Vec2(2.0, 3.0), Vec2(2.0, 3.0));
+
+    assert(geom::nearly_equal(
+        distance_point_segment(Vec2(5.0, 7.0), degenerate2),
+        5.0
+    ));
+
+    Segment3 horizontal3(Vec3(0.0, 0.0, 0.0), Vec3(10.0, 0.0, 0.0));
+
+    assert(geom::nearly_equal(
+        distance_point_segment(Vec3(3.0, 4.0, 0.0), horizontal3),
+        4.0
+    ));
+
+    assert(geom::nearly_equal(
+        distance_point_segment(Vec3(3.0, 0.0, 4.0), horizontal3),
+        4.0
+    ));
+
+    assert(geom::nearly_equal(
+        distance_point_segment(Vec3(-3.0, 4.0, 0.0), horizontal3),
+        5.0
+    ));
+
+    assert(geom::nearly_equal(
+        distance_point_segment(Vec3(13.0, 4.0, 0.0), horizontal3),
+        5.0
+    ));
+
+    assert(geom::nearly_equal(
+        distance_point_segment(Vec3(5.0, 0.0, 0.0), horizontal3),
+        0.0
+    ));
+
+    Segment3 degenerate3(Vec3(1.0, 2.0, 3.0), Vec3(1.0, 2.0, 3.0));
+
+    assert(geom::nearly_equal(
+        distance_point_segment(Vec3(3.0, 4.0, 4.0), degenerate3),
+        3.0
+    ));
+}
+
+
 void test_segment3() {
-    using namespace geom;
 
     Segment3 segment(Vec3(1.0, 2.0, 3.0), Vec3(4.0, 6.0, 15.0));
 
@@ -91,6 +160,7 @@ void test_segment2() {
 
 int main() {
 
+    test_distance();
     test_segment3();
     test_segment2();
     // Конструкторы и доступ к координатам

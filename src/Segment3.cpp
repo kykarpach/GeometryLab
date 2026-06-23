@@ -24,7 +24,7 @@ double Segment3::length2() const{
 }
 
 bool Segment3::is_degenerate() const{
-    return is_zero(length2());
+    return is_zero(length());
 }
 
 bool Segment3::contains_point(const Vec3& p) const{
