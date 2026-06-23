@@ -13,6 +13,7 @@ add_library(geometry
     src/Distance.cpp
     src/IntersectionResult2.cpp
     src/IntersectionResult3.cpp
+    src/Intersections.cpp
 )
 
 

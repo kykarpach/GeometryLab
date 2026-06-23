@@ -3,6 +3,9 @@
 #include "geometry/Vec2.h"
 #include "geometry/Segment2.h"
 #include <optional>
+// std::optional<T> — это контейнер для значения, которое может быть, а может отсутствовать.
+
+
 
 namespace geom {
 

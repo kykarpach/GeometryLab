@@ -16,7 +16,7 @@
 using namespace geom;
 
 void test_intersection_result3() {
-    using namespace geom;
+    
 
     IntersectionResult3 none = IntersectionResult3::none();
 
@@ -49,7 +49,7 @@ void test_intersection_result3() {
 }
 
 void test_intersection_result2() {
-    using namespace geom;
+    ;
 
     IntersectionResult2 none = IntersectionResult2::none();
 

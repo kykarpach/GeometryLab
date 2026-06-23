@@ -3,6 +3,7 @@
 #include "geometry/Vec3.h"
 #include "geometry/Segment3.h"
 #include <optional>
+// std::optional<T> — это контейнер для значения, которое может быть, а может отсутствовать.
 
 namespace geom {
 
@@ -16,6 +17,7 @@ enum class IntersectionType3 {
 // Результат пересечения двух 3D-отрезков.
 // В зависимости от type используется только point или segment.
 struct IntersectionResult3 {
+    
     IntersectionType3 type;
     std::optional<Vec3> point;
     std::optional<Segment3> segment;
