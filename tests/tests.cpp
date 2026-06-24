@@ -1,4 +1,5 @@
 // Тест создан нейросетью. Автор проекта не ручается за полноту и идеальную корректность этих тестов.
+#include "geometry/Intersections.h"
 #include "geometry/IntersectionResult3.h"
 #include "geometry/IntersectionResult2.h"
 #include "geometry/Distance.h"
@@ -14,6 +15,115 @@
 #include <optional>
 
 using namespace geom;
+
+void test_segment2_intersection() {
+    using namespace geom;
+
+    // Непараллельные отрезки пересекаются в одной точке.
+    Segment2 a1(Vec2(0.0, 0.0), Vec2(10.0, 0.0));
+    Segment2 b1(Vec2(5.0, -5.0), Vec2(5.0, 5.0));
+
+    IntersectionResult2 r1 = intersect(a1, b1);
+
+    assert(r1.type == IntersectionType2::Point);
+    assert(r1.point.has_value());
+    assert(geom::nearly_equal(r1.point->x(), 5.0));
+    assert(geom::nearly_equal(r1.point->y(), 0.0));
+
+    // Непараллельные прямые пересекаются, но сами отрезки не доходят до точки пересечения.
+    Segment2 a2(Vec2(0.0, 0.0), Vec2(1.0, 0.0));
+    Segment2 b2(Vec2(2.0, -1.0), Vec2(2.0, 1.0));
+
+    IntersectionResult2 r2 = intersect(a2, b2);
+
+    assert(r2.type == IntersectionType2::None);
+    assert(!r2.point.has_value());
+    assert(!r2.segment.has_value());
+
+    // Параллельные отрезки лежат на разных прямых.
+    Segment2 a3(Vec2(0.0, 0.0), Vec2(10.0, 0.0));
+    Segment2 b3(Vec2(0.0, 1.0), Vec2(10.0, 1.0));
+
+    IntersectionResult2 r3 = intersect(a3, b3);
+
+    assert(r3.type == IntersectionType2::None);
+
+    // Коллинеарные отрезки не пересекаются.
+    Segment2 a4(Vec2(0.0, 0.0), Vec2(10.0, 0.0));
+    Segment2 b4(Vec2(11.0, 0.0), Vec2(15.0, 0.0));
+
+    IntersectionResult2 r4 = intersect(a4, b4);
+
+    assert(r4.type == IntersectionType2::None);
+
+    // Коллинеарные отрезки касаются в одной точке.
+    Segment2 a5(Vec2(0.0, 0.0), Vec2(10.0, 0.0));
+    Segment2 b5(Vec2(10.0, 0.0), Vec2(15.0, 0.0));
+
+    IntersectionResult2 r5 = intersect(a5, b5);
+
+    assert(r5.type == IntersectionType2::Point);
+    assert(r5.point.has_value());
+    assert(geom::nearly_equal(r5.point->x(), 10.0));
+    assert(geom::nearly_equal(r5.point->y(), 0.0));
+
+    // Коллинеарные отрезки пересекаются отрезком.
+    Segment2 a6(Vec2(0.0, 0.0), Vec2(10.0, 0.0));
+    Segment2 b6(Vec2(3.0, 0.0), Vec2(7.0, 0.0));
+
+    IntersectionResult2 r6 = intersect(a6, b6);
+
+    assert(r6.type == IntersectionType2::Segment);
+    assert(r6.segment.has_value());
+    assert(geom::nearly_equal(r6.segment->start().x(), 3.0));
+    assert(geom::nearly_equal(r6.segment->start().y(), 0.0));
+    assert(geom::nearly_equal(r6.segment->end().x(), 7.0));
+    assert(geom::nearly_equal(r6.segment->end().y(), 0.0));
+
+    // Коллинеарные отрезки пересекаются отрезком, частичное наложение.
+    Segment2 a7(Vec2(0.0, 0.0), Vec2(10.0, 0.0));
+    Segment2 b7(Vec2(7.0, 0.0), Vec2(15.0, 0.0));
+
+    IntersectionResult2 r7 = intersect(a7, b7);
+
+    assert(r7.type == IntersectionType2::Segment);
+    assert(r7.segment.has_value());
+    assert(geom::nearly_equal(r7.segment->start().x(), 7.0));
+    assert(geom::nearly_equal(r7.segment->start().y(), 0.0));
+    assert(geom::nearly_equal(r7.segment->end().x(), 10.0));
+    assert(geom::nearly_equal(r7.segment->end().y(), 0.0));
+
+    // Один отрезок вырожден в точку и лежит на другом.
+    Segment2 a8(Vec2(5.0, 0.0), Vec2(5.0, 0.0));
+    Segment2 b8(Vec2(0.0, 0.0), Vec2(10.0, 0.0));
+
+    IntersectionResult2 r8 = intersect(a8, b8);
+
+    assert(r8.type == IntersectionType2::Point);
+    assert(r8.point.has_value());
+    assert(geom::nearly_equal(r8.point->x(), 5.0));
+    assert(geom::nearly_equal(r8.point->y(), 0.0));
+
+    // Оба отрезка вырождены в одну и ту же точку.
+    Segment2 a9(Vec2(2.0, 3.0), Vec2(2.0, 3.0));
+    Segment2 b9(Vec2(2.0, 3.0), Vec2(2.0, 3.0));
+
+    IntersectionResult2 r9 = intersect(a9, b9);
+
+    assert(r9.type == IntersectionType2::Point);
+    assert(r9.point.has_value());
+    assert(geom::nearly_equal(r9.point->x(), 2.0));
+    assert(geom::nearly_equal(r9.point->y(), 3.0));
+
+    // Оба отрезка вырождены в разные точки.
+    Segment2 a10(Vec2(2.0, 3.0), Vec2(2.0, 3.0));
+    Segment2 b10(Vec2(4.0, 5.0), Vec2(4.0, 5.0));
+
+    IntersectionResult2 r10 = intersect(a10, b10);
+
+    assert(r10.type == IntersectionType2::None);
+}
+
 
 void test_intersection_result3() {
     
@@ -227,7 +337,7 @@ void test_segment2() {
 
 int main() {
     
-    
+    test_segment2_intersection();
     test_intersection_result2();
     test_intersection_result3();
     test_distance();

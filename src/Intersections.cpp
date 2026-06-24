@@ -1,4 +1,5 @@
 #include "geometry/Intersections.h"
+#include <algorithm>
 
 namespace geom {
 
@@ -61,6 +62,7 @@ IntersectionResult2 intersect(const Segment2& a, const Segment2& b) {
 
 
     // 3. Проверить параллельные непересекающиеся
+    // 4. Проверить наложение коллинеарных отрезков
 
     if (is_zero(va.cross(vb))) {//Условие параллельности исходных отрезков
         if( !( is_zero(va.cross(w)) ) ){// случай когда отрезки лежат на разных паралл прямых
@@ -71,24 +73,28 @@ IntersectionResult2 intersect(const Segment2& a, const Segment2& b) {
             double t0 = (b.start() - a.start()).dot(va) / va.length2();// Где b.start() лежит оносително Va?
             double t1 = (b.end() - a.start()).dot(va) / va.length2();// Где b.утв() лежит оносително Va?
             
-            if( -EPS <= t0 && t0 <= 1 + EPS ){
-                
+            double b_min = std::min(t0, t1); // дают понимания как b ориентирован относительно
+            double b_max = std::max(t0, t1); //                                        a.start()
+
+            //начало и конец пересечения отрезков a и b 
+            double left = std::max(b_min, 0.0);
+            double right = std::min(b_max, 1.0);
+
+            if(left > right + EPS){//Пересечений нет - начло больше конца
+                return IntersectionResult2::none();
             }
 
-            if( -EPS <= t1 && t1 <= 1 + EPS ){
-
+            if( is_zero(left - right) ){
+                return IntersectionResult2::point_result (a.start() + va * left);
             }
 
-        }
+            return IntersectionResult2::segment_result(Segment2 (a.start() + va * left, a.start() + va * right ));
             
+        }
     }
 
+    return IntersectionResult2::none();
 
-
-
-
-    // 4. Проверить наложение коллинеарных отрезков
-    // 5. Вернуть IntersectionResult2::none / point_result / segment_result
 }
 
 }
