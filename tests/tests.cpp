@@ -16,6 +16,131 @@
 
 using namespace geom;
 
+void test_intersect_segment3() {
+
+    // 1. Непараллельные отрезки пересекаются в точке
+    {
+        Segment3 a(Vec3(0, 0, 0), Vec3(2, 0, 0));
+        Segment3 b(Vec3(1, -1, 0), Vec3(1, 1, 0));
+
+        auto res = intersect(a, b);
+
+        assert(res.type == IntersectionType3::Point);
+        assert(res.point.has_value());
+        assert(is_zero((*res.point - Vec3(1, 0, 0)).length()));
+    }
+
+    // 2. Скрещивающиеся отрезки: прямые не параллельны, но в 3D не пересекаются
+    {
+        Segment3 a(Vec3(0, 0, 0), Vec3(1, 0, 0));
+        Segment3 b(Vec3(0, 1, 1), Vec3(0, 2, 0));
+
+        auto res = intersect(a, b);
+
+        assert(res.type == IntersectionType3::None);
+    }
+
+    // 3. Непараллельные прямые пересеклись бы, но точка вне первого отрезка
+    {
+        Segment3 a(Vec3(0, 0, 0), Vec3(1, 0, 0));
+        Segment3 b(Vec3(2, -1, 0), Vec3(2, 1, 0));
+
+        auto res = intersect(a, b);
+
+        assert(res.type == IntersectionType3::None);
+    }
+
+    // 4. Параллельные отрезки на разных прямых
+    {
+        Segment3 a(Vec3(0, 0, 0), Vec3(2, 0, 0));
+        Segment3 b(Vec3(0, 1, 0), Vec3(2, 1, 0));
+
+        auto res = intersect(a, b);
+
+        assert(res.type == IntersectionType3::None);
+    }
+
+    // 5. Коллинеарные отрезки перекрываются отрезком
+    {
+        Segment3 a(Vec3(0, 0, 0), Vec3(4, 0, 0));
+        Segment3 b(Vec3(2, 0, 0), Vec3(6, 0, 0));
+
+        auto res = intersect(a, b);
+
+        assert(res.type == IntersectionType3::Segment);
+        assert(res.segment.has_value());
+        assert(is_zero((res.segment->start() - Vec3(2, 0, 0)).length()));
+        assert(is_zero((res.segment->end() - Vec3(4, 0, 0)).length()));
+    }
+
+    // 6. Коллинеарные отрезки касаются в одной точке
+    {
+        Segment3 a(Vec3(0, 0, 0), Vec3(2, 0, 0));
+        Segment3 b(Vec3(2, 0, 0), Vec3(4, 0, 0));
+
+        auto res = intersect(a, b);
+
+        assert(res.type == IntersectionType3::Point);
+        assert(res.point.has_value());
+        assert(is_zero((*res.point - Vec3(2, 0, 0)).length()));
+    }
+
+    // 7. Коллинеарные отрезки не пересекаются
+    {
+        Segment3 a(Vec3(0, 0, 0), Vec3(1, 0, 0));
+        Segment3 b(Vec3(2, 0, 0), Vec3(3, 0, 0));
+
+        auto res = intersect(a, b);
+
+        assert(res.type == IntersectionType3::None);
+    }
+
+    // 8. Один отрезок вырожден в точку, точка лежит на втором
+    {
+        Segment3 a(Vec3(1, 1, 1), Vec3(1, 1, 1));
+        Segment3 b(Vec3(0, 0, 0), Vec3(2, 2, 2));
+
+        auto res = intersect(a, b);
+
+        assert(res.type == IntersectionType3::Point);
+        assert(res.point.has_value());
+        assert(is_zero((*res.point - Vec3(1, 1, 1)).length()));
+    }
+
+    // 9. Один отрезок вырожден в точку, точка не лежит на втором
+    {
+        Segment3 a(Vec3(1, 1, 2), Vec3(1, 1, 2));
+        Segment3 b(Vec3(0, 0, 0), Vec3(2, 2, 2));
+
+        auto res = intersect(a, b);
+
+        assert(res.type == IntersectionType3::None);
+    }
+
+    // 10. Оба отрезка вырождены в одну точку
+    {
+        Segment3 a(Vec3(1, 2, 3), Vec3(1, 2, 3));
+        Segment3 b(Vec3(1, 2, 3), Vec3(1, 2, 3));
+
+        auto res = intersect(a, b);
+
+        assert(res.type == IntersectionType3::Point);
+        assert(res.point.has_value());
+        assert(is_zero((*res.point - Vec3(1, 2, 3)).length()));
+    }
+
+    // 11. Оба отрезка вырождены в разные точки
+    {
+        Segment3 a(Vec3(1, 2, 3), Vec3(1, 2, 3));
+        Segment3 b(Vec3(1, 2, 4), Vec3(1, 2, 4));
+
+        auto res = intersect(a, b);
+
+        assert(res.type == IntersectionType3::None);
+    }
+}
+
+
 void test_segment2_intersection() {
     using namespace geom;
 
@@ -337,6 +462,7 @@ void test_segment2() {
 
 int main() {
     
+    test_intersect_segment3();
     test_segment2_intersection();
     test_intersection_result2();
     test_intersection_result3();
