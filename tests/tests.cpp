@@ -1,4 +1,5 @@
 // Тест создан нейросетью. Автор проекта не ручается за полноту и идеальную корректность этих тестов.
+#include "geometry/AABB2.h"
 #include "geometry/Intersections.h"
 #include "geometry/IntersectionResult3.h"
 #include "geometry/IntersectionResult2.h"
@@ -15,6 +16,173 @@
 #include <optional>
 
 using namespace geom;
+
+void test_aabb2() {
+    using namespace geom;
+
+    // 1. default constructor
+    {
+        AABB2 box;
+
+        assert(box.min().x() == 0.0);
+        assert(box.min().y() == 0.0);
+        assert(box.max().x() == 0.0);
+        assert(box.max().y() == 0.0);
+
+        assert(box.width() == 0.0);
+        assert(box.height() == 0.0);
+        assert(box.area() == 0.0);
+    }
+
+    // 2. normal constructor
+    {
+        AABB2 box(Vec2(1.0, 2.0), Vec2(5.0, 8.0));
+
+        assert(box.min().x() == 1.0);
+        assert(box.min().y() == 2.0);
+        assert(box.max().x() == 5.0);
+        assert(box.max().y() == 8.0);
+
+        assert(box.width() == 4.0);
+        assert(box.height() == 6.0);
+        assert(box.area() == 24.0);
+    }
+
+    // 3. center
+    {
+        AABB2 box(Vec2(0.0, 0.0), Vec2(10.0, 6.0));
+        Vec2 c = box.center();
+
+        assert(c.x() == 5.0);
+        assert(c.y() == 3.0);
+    }
+
+    // 4. contains: inside
+    {
+        AABB2 box(Vec2(0.0, 0.0), Vec2(10.0, 10.0));
+
+        assert(box.contains(Vec2(5.0, 5.0)));
+    }
+
+    // 5. contains: border
+    {
+        AABB2 box(Vec2(0.0, 0.0), Vec2(10.0, 10.0));
+
+        assert(box.contains(Vec2(0.0, 0.0)));
+        assert(box.contains(Vec2(10.0, 10.0)));
+        assert(box.contains(Vec2(0.0, 5.0)));
+        assert(box.contains(Vec2(10.0, 5.0)));
+    }
+
+    // 6. contains: outside
+    {
+        AABB2 box(Vec2(0.0, 0.0), Vec2(10.0, 10.0));
+
+        assert(!box.contains(Vec2(-1.0, 5.0)));
+        assert(!box.contains(Vec2(11.0, 5.0)));
+        assert(!box.contains(Vec2(5.0, -1.0)));
+        assert(!box.contains(Vec2(5.0, 11.0)));
+    }
+
+    // 7. intersects: overlapping boxes
+    {
+        AABB2 a(Vec2(0.0, 0.0), Vec2(10.0, 10.0));
+        AABB2 b(Vec2(5.0, 5.0), Vec2(15.0, 15.0));
+
+        assert(a.intersects(b));
+        assert(b.intersects(a));
+    }
+
+    // 8. intersects: touching by side
+    {
+        AABB2 a(Vec2(0.0, 0.0), Vec2(10.0, 10.0));
+        AABB2 b(Vec2(10.0, 0.0), Vec2(20.0, 10.0));
+
+        assert(a.intersects(b));
+        assert(b.intersects(a));
+    }
+
+    // 9. intersects: touching by point
+    {
+        AABB2 a(Vec2(0.0, 0.0), Vec2(10.0, 10.0));
+        AABB2 b(Vec2(10.0, 10.0), Vec2(20.0, 20.0));
+
+        assert(a.intersects(b));
+        assert(b.intersects(a));
+    }
+
+    // 10. intersects: separated boxes
+    {
+        AABB2 a(Vec2(0.0, 0.0), Vec2(10.0, 10.0));
+        AABB2 b(Vec2(11.0, 0.0), Vec2(20.0, 10.0));
+        AABB2 c(Vec2(0.0, 11.0), Vec2(10.0, 20.0));
+
+        assert(!a.intersects(b));
+        assert(!b.intersects(a));
+
+        assert(!a.intersects(c));
+        assert(!c.intersects(a));
+    }
+
+    // 11. intersects: cross-like case
+    // Важный тест: углы могут не лежать внутри, но пересечение есть.
+    {
+        AABB2 a(Vec2(0.0, 4.0), Vec2(10.0, 6.0));
+        AABB2 b(Vec2(4.0, 0.0), Vec2(6.0, 10.0));
+
+        assert(a.intersects(b));
+        assert(b.intersects(a));
+    }
+
+    // 12. expand to the right/up
+    {
+        AABB2 box(Vec2(0.0, 0.0), Vec2(10.0, 10.0));
+
+        box.expand(Vec2(15.0, 20.0));
+
+        assert(box.min().x() == 0.0);
+        assert(box.min().y() == 0.0);
+        assert(box.max().x() == 15.0);
+        assert(box.max().y() == 20.0);
+    }
+
+    // 13. expand to the left/down
+    {
+        AABB2 box(Vec2(0.0, 0.0), Vec2(10.0, 10.0));
+
+        box.expand(Vec2(-5.0, -3.0));
+
+        assert(box.min().x() == -5.0);
+        assert(box.min().y() == -3.0);
+        assert(box.max().x() == 10.0);
+        assert(box.max().y() == 10.0);
+    }
+
+    // 14. expand by inner point should not change box
+    {
+        AABB2 box(Vec2(0.0, 0.0), Vec2(10.0, 10.0));
+
+        box.expand(Vec2(5.0, 5.0));
+
+        assert(box.min().x() == 0.0);
+        assert(box.min().y() == 0.0);
+        assert(box.max().x() == 10.0);
+        assert(box.max().y() == 10.0);
+    }
+
+    // 15. invalid constructor
+    {
+        bool thrown = false;
+
+        try {
+            AABB2 bad(Vec2(10.0, 0.0), Vec2(0.0, 10.0));
+        } catch (const std::invalid_argument&) {
+            thrown = true;
+        }
+
+        assert(thrown);
+    }
+}
 
 void test_intersect_segment3() {
 
@@ -458,6 +626,7 @@ void test_segment2() {
 
 int main() {
     
+    test_aabb2();
     test_intersect_segment3();
     test_segment2_intersection();
     test_intersection_result2();
