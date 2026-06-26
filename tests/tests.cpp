@@ -1,4 +1,5 @@
 // Тест создан нейросетью. Автор проекта не ручается за полноту и идеальную корректность этих тестов.
+#include "geometry/Polygon2.h"
 #include "geometry/AABB2.h"
 #include "geometry/Intersections.h"
 #include "geometry/IntersectionResult3.h"
@@ -16,6 +17,151 @@
 #include <optional>
 
 using namespace geom;
+
+void test_polygon2() {
+    using namespace geom;
+
+    // 1. Constructor and size
+    {
+        Polygon2 poly({
+            Vec2(0.0, 0.0),
+            Vec2(4.0, 0.0),
+            Vec2(4.0, 3.0)
+        });
+
+        assert(poly.size() == 3);
+        assert(poly[0].x() == 0.0);
+        assert(poly[1].x() == 4.0);
+        assert(poly[2].y() == 3.0);
+    }
+
+    // 2. Invalid polygon: less than 3 vertices
+    {
+        bool thrown = false;
+
+        try {
+            Polygon2 bad({
+                Vec2(0.0, 0.0),
+                Vec2(1.0, 1.0)
+            });
+        } catch (const std::invalid_argument&) {
+            thrown = true;
+        }
+
+        assert(thrown);
+    }
+
+    // 3. Triangle perimeter and area
+    {
+        Polygon2 tri({
+            Vec2(0.0, 0.0),
+            Vec2(3.0, 0.0),
+            Vec2(0.0, 4.0)
+        });
+
+        assert(nearly_equal(tri.perimeter(), 12.0));
+        assert(nearly_equal(tri.area(), 6.0));
+    }
+
+    // 4. Rectangle perimeter and area
+    {
+        Polygon2 rect({
+            Vec2(0.0, 0.0),
+            Vec2(4.0, 0.0),
+            Vec2(4.0, 3.0),
+            Vec2(0.0, 3.0)
+        });
+
+        assert(nearly_equal(rect.perimeter(), 14.0));
+        assert(nearly_equal(rect.area(), 12.0));
+    }
+
+    // 5. Same rectangle, reverse order: area should stay positive
+    {
+        Polygon2 rect({
+            Vec2(0.0, 0.0),
+            Vec2(0.0, 3.0),
+            Vec2(4.0, 3.0),
+            Vec2(4.0, 0.0)
+        });
+
+        assert(nearly_equal(rect.area(), 12.0));
+    }
+
+    // 6. Bounding box
+    {
+        Polygon2 poly({
+            Vec2(2.0, 5.0),
+            Vec2(10.0, 3.0),
+            Vec2(4.0, -1.0)
+        });
+
+        AABB2 box = poly.bounding_box();
+
+        assert(box.min().x() == 2.0);
+        assert(box.min().y() == -1.0);
+        assert(box.max().x() == 10.0);
+        assert(box.max().y() == 5.0);
+    }
+
+    // 7. contains_point: inside rectangle
+    {
+        Polygon2 rect({
+            Vec2(0.0, 0.0),
+            Vec2(4.0, 0.0),
+            Vec2(4.0, 3.0),
+            Vec2(0.0, 3.0)
+        });
+
+        assert(rect.contains_point(Vec2(2.0, 1.0)));
+    }
+
+    // 8. contains_point: outside rectangle
+    {
+        Polygon2 rect({
+            Vec2(0.0, 0.0),
+            Vec2(4.0, 0.0),
+            Vec2(4.0, 3.0),
+            Vec2(0.0, 3.0)
+        });
+
+        assert(!rect.contains_point(Vec2(5.0, 1.0)));
+        assert(!rect.contains_point(Vec2(2.0, 4.0)));
+    }
+
+    // 9. contains_point: on border
+    {
+        Polygon2 rect({
+            Vec2(0.0, 0.0),
+            Vec2(4.0, 0.0),
+            Vec2(4.0, 3.0),
+            Vec2(0.0, 3.0)
+        });
+
+        assert(rect.contains_point(Vec2(0.0, 0.0)));
+        assert(rect.contains_point(Vec2(2.0, 0.0)));
+        assert(rect.contains_point(Vec2(4.0, 2.0)));
+    }
+
+    // 10. Concave polygon
+    {
+        Polygon2 poly({
+            Vec2(0.0, 0.0),
+            Vec2(4.0, 0.0),
+            Vec2(4.0, 4.0),
+            Vec2(2.0, 2.0),
+            Vec2(0.0, 4.0)
+        });
+
+        assert(nearly_equal(poly.area(), 12.0));
+
+        assert(poly.contains_point(Vec2(1.0, 1.0)));
+        assert(poly.contains_point(Vec2(3.5, 1.0)));
+
+        // Точка в "вырезанной" вогнутой области
+        assert(!poly.contains_point(Vec2(2.0, 3.0)));
+    }
+}
 
 void test_aabb2() {
     using namespace geom;
@@ -626,6 +772,7 @@ void test_segment2() {
 
 int main() {
     
+    test_polygon2();
     test_aabb2();
     test_intersect_segment3();
     test_segment2_intersection();

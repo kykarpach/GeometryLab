@@ -15,6 +15,7 @@ add_library(geometry
     src/IntersectionResult3.cpp
     src/Intersections.cpp
     src/AABB2.cpp
+    src/Polygon2.cpp
 )
 
 

@@ -5,7 +5,7 @@ namespace geom{
 
 AABB2::AABB2(): min_(Vec2()), max_(Vec2()){}
 AABB2::AABB2(const Vec2& min, const Vec2& max): min_(min), max_(max) {
-    if(min.x() > max.x() || min.y() > max.y()) {
+    if(min.x() > max.x() || min.y() > max.y()) {//при этом min может быть равен max
         throw std::invalid_argument("max < min");
     }
 }
