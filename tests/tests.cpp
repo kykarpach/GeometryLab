@@ -140,7 +140,6 @@ void test_intersect_segment3() {
     }
 }
 
-
 void test_segment2_intersection() {
     using namespace geom;
 
@@ -249,7 +248,6 @@ void test_segment2_intersection() {
     assert(r10.type == IntersectionType2::None);
 }
 
-
 void test_intersection_result3() {
     
 
@@ -312,7 +310,6 @@ void test_intersection_result2() {
     assert(geom::nearly_equal(segment.segment->end().x(), 4.0));
     assert(geom::nearly_equal(segment.segment->end().y(), 4.0));
 }
-
 
 void test_distance() {
 
@@ -381,7 +378,6 @@ void test_distance() {
         3.0
     ));
 }
-
 
 void test_segment3() {
 
@@ -853,7 +849,144 @@ int main() {
     }
 
 
-    
+
+        // distance_point_line: точка над осью X
+    {
+        geom::Vec3 p(0.0, 3.0, 0.0);
+        geom::Vec3 A0(0.0, 0.0, 0.0);
+        geom::Vec3 A1(1.0, 0.0, 0.0);
+
+        assert(nearly_equal(geom::distance_point_line(p, A0, A1), 3.0));
+    }
+
+    // distance_point_line: точка лежит на прямой
+    {
+        geom::Vec3 p(5.0, 0.0, 0.0);
+        geom::Vec3 A0(0.0, 0.0, 0.0);
+        geom::Vec3 A1(1.0, 0.0, 0.0);
+
+        assert(nearly_equal(geom::distance_point_line(p, A0, A1), 0.0));
+    }
+
+    // distance_point_line: направляющий вектор не единичный
+    {
+        geom::Vec3 p(0.0, 3.0, 4.0);
+        geom::Vec3 A0(0.0, 0.0, 0.0);
+        geom::Vec3 A1(10.0, 0.0, 0.0);
+
+        assert(nearly_equal(geom::distance_point_line(p, A0, A1), 5.0));
+    }
+
+    // distance_point_line: вырожденная прямая
+    {
+        geom::Vec3 p(1.0, 2.0, 3.0);
+        geom::Vec3 A0(0.0, 0.0, 0.0);
+        geom::Vec3 A1(0.0, 0.0, 0.0);
+
+        bool thrown = false;
+
+        try {
+            geom::distance_point_line(p, A0, A1);
+        } catch (const std::invalid_argument&) {
+            thrown = true;
+        }
+
+        assert(thrown);
+    }
+
+    // distance_line_line: совпадающие прямые
+    {
+        geom::Vec3 A0(0.0, 0.0, 0.0);
+        geom::Vec3 A1(1.0, 0.0, 0.0);
+
+        geom::Vec3 B0(5.0, 0.0, 0.0);
+        geom::Vec3 B1(10.0, 0.0, 0.0);
+
+        assert(nearly_equal(geom::distance_line_line(A0, A1, B0, B1), 0.0));
+    }
+
+    // distance_line_line: параллельные разные прямые
+    {
+        geom::Vec3 A0(0.0, 0.0, 0.0);
+        geom::Vec3 A1(1.0, 0.0, 0.0);
+
+        geom::Vec3 B0(0.0, 2.0, 0.0);
+        geom::Vec3 B1(1.0, 2.0, 0.0);
+
+        assert(nearly_equal(geom::distance_line_line(A0, A1, B0, B1), 2.0));
+    }
+
+    // distance_line_line: пересекающиеся прямые
+    {
+        geom::Vec3 A0(0.0, 0.0, 0.0);
+        geom::Vec3 A1(1.0, 0.0, 0.0);
+
+        geom::Vec3 B0(0.0, 0.0, 0.0);
+        geom::Vec3 B1(0.0, 1.0, 0.0);
+
+        assert(nearly_equal(geom::distance_line_line(A0, A1, B0, B1), 0.0));
+    }
+
+    // distance_line_line: скрещивающиеся прямые
+    {
+        geom::Vec3 A0(0.0, 0.0, 0.0);
+        geom::Vec3 A1(1.0, 0.0, 0.0);
+
+        geom::Vec3 B0(0.0, 1.0, 2.0);
+        geom::Vec3 B1(0.0, 2.0, 2.0);
+
+        assert(nearly_equal(geom::distance_line_line(A0, A1, B0, B1), 2.0));
+    }
+
+    // distance_line_line: скрещивающиеся прямые, направления не единичные
+    {
+        geom::Vec3 A0(0.0, 0.0, 0.0);
+        geom::Vec3 A1(2.0, 0.0, 0.0);
+
+        geom::Vec3 B0(0.0, 1.0, 5.0);
+        geom::Vec3 B1(0.0, 4.0, 5.0);
+
+        assert(nearly_equal(geom::distance_line_line(A0, A1, B0, B1), 5.0));
+    }
+
+    // distance_line_line: первая прямая вырождена
+    {
+        geom::Vec3 A0(0.0, 0.0, 0.0);
+        geom::Vec3 A1(0.0, 0.0, 0.0);
+
+        geom::Vec3 B0(0.0, 1.0, 0.0);
+        geom::Vec3 B1(1.0, 1.0, 0.0);
+
+        bool thrown = false;
+
+        try {
+            geom::distance_line_line(A0, A1, B0, B1);
+        } catch (const std::invalid_argument&) {
+            thrown = true;
+        }
+
+        assert(thrown);
+    }
+
+    // distance_line_line: вторая прямая вырождена
+    {
+        geom::Vec3 A0(0.0, 0.0, 0.0);
+        geom::Vec3 A1(1.0, 0.0, 0.0);
+
+        geom::Vec3 B0(0.0, 1.0, 0.0);
+        geom::Vec3 B1(0.0, 1.0, 0.0);
+
+        bool thrown = false;
+
+        try {
+            geom::distance_line_line(A0, A1, B0, B1);
+        } catch (const std::invalid_argument&) {
+            thrown = true;
+        }
+
+        assert(thrown);
+    }
+        
 
 
 

@@ -44,7 +44,8 @@ double distance_point_segment(const Vec2& p, const Segment2& s){
 
 }
 
-// Та же самоа функция, но для 3Д
+//Минимальное расстояние от 3D-точки до 3D-отрезка.
+//Именнно до отрезка, а не до прямой на который этот отрезок лежит
 double distance_point_segment(const Vec3& p, const Segment3& s){
 
       // s - вырожденный в точку отрезок
@@ -91,31 +92,36 @@ double distance_point_line(const Vec3& p, const Vec3& A0, const Vec3& A1){
 
 }
 
-
+//Минимальное расстояние от прямой до прямой. 3Д
 // Две бесконечные прямые здаются точками
 double distance_line_line(const Vec3& A0, const Vec3& A1, const Vec3& B0, const Vec3& B1){
 
     Vec3 va = A1 - A0;
     Vec3 vb = B1 - B0;
 
+    Vec3 w = B0 - A0;
+    Vec3 cross_va_vb = va.cross(vb);
+
     double va_length = va.length();
     double vb_length = vb.length();
+    double cross_va_vb_length = cross_va_vb.length();
 
     if(is_zero(va_length) || is_zero(vb_length)){
         throw std::invalid_argument("line is degenirate");
     }
 
-    Vec3 w = B0 - A0;
-
-    if(is_zero( (va.cross(vb)).length() )){ // Условие параллельности
+    if(is_zero( cross_va_vb_length )){ // Условие параллельности
         return distance_point_line(A0, B0, B1);
     }
 
+    // Разобрать случай непраллельности прямых
 
-    return 0;
+    return std::abs(w.dot(cross_va_vb) / cross_va_vb_length);
 
 }
 
+
+// ------------------------------------------------------------------------------------------
 // То же самое но поменял местами аргументы
 
 double distance_point_segment(const Segment2& s, const Vec2& p){
