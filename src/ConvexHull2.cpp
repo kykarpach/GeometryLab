@@ -13,7 +13,7 @@ namespace geom {
     // Возвращает Polygon2.
 
 // Алгоритм называется - Монотонная цепь Эндрю //https://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_answ/Monotone_chain
-Polygon2 convex_answ(std::vector<Vec2> points) {
+Polygon2 convex_hull(std::vector<Vec2> points) {
     // Отсортировали точки по x, если x равны - по y
     std::sort(points.begin(),
               points.end(),

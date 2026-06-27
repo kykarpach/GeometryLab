@@ -40,7 +40,7 @@ bool Segment2::contains_point(const Vec2& p) const{
         Vec2 v0 = start_ - end_;
         Vec2 v1 = start_ - p;
         
-        if( ( is_zero(v0.cross(v1)) ) && ( v0.dot(v1) >= 0 ) && ( v0.dot(v1) <= v0.length2() ) ){
+        if( ( is_zero(v0.cross(v1)) ) && ( v0.dot(v1) >= -EPS ) && ( v0.dot(v1) <= v0.length2() + EPS) ){
             return true;
         }else return false;
     }

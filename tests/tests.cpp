@@ -20,7 +20,7 @@
 using namespace geom;
 
 
-void test_convex_answ() {
+void test_convex_hull() {
     auto same_point = [](const geom::Vec2& a, const geom::Vec2& b) {
         return geom::nearly_equal(a.x(), b.x()) &&
                geom::nearly_equal(a.y(), b.y());
@@ -40,7 +40,7 @@ void test_convex_answ() {
             {0.5, 0.5}, {0.25, 0.25}
         };
 
-        geom::Polygon2 hull = geom::convex_answ(points);
+        geom::Polygon2 hull = geom::convex_hull(points);
         const auto& v = hull.vertices();
 
         assert(v.size() == 4);
@@ -58,7 +58,7 @@ void test_convex_answ() {
             {0, 1}, {0, 1}
         };
 
-        geom::Polygon2 hull = geom::convex_answ(points);
+        geom::Polygon2 hull = geom::convex_hull(points);
         const auto& v = hull.vertices();
 
         assert(v.size() == 4);
@@ -74,7 +74,7 @@ void test_convex_answ() {
             {1, 0.5}
         };
 
-        geom::Polygon2 hull = geom::convex_answ(points);
+        geom::Polygon2 hull = geom::convex_hull(points);
         const auto& v = hull.vertices();
 
         assert(v.size() == 3);
@@ -89,7 +89,7 @@ void test_convex_answ() {
             {2, 1}, {1, 1}, {0, 1}
         };
 
-        geom::Polygon2 hull = geom::convex_answ(points);
+        geom::Polygon2 hull = geom::convex_hull(points);
         const auto& v = hull.vertices();
 
         assert(v.size() == 4);
@@ -110,7 +110,7 @@ void test_convex_answ() {
                 {0, 0}, {1, 1}, {1, 1}
             };
 
-            geom::convex_answ(points);
+            geom::convex_hull(points);
         } catch (const std::invalid_argument&) {
             thrown = true;
         }
@@ -126,7 +126,7 @@ void test_convex_answ() {
                 {0, 0}, {1, 0}, {2, 0}, {3, 0}
             };
 
-            geom::convex_answ(points);
+            geom::convex_hull(points);
         } catch (const std::invalid_argument&) {
             thrown = true;
         }
@@ -134,7 +134,6 @@ void test_convex_answ() {
         assert(thrown);
     }
 }
-
 
 void test_polygon2() {
     using namespace geom;
@@ -890,7 +889,7 @@ void test_segment2() {
 
 int main() {
     
-    test_convex_answ();
+    test_convex_hull();
     test_polygon2();
     test_aabb2();
     test_intersect_segment3();

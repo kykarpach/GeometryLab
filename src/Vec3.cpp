@@ -65,7 +65,7 @@ const double& Vec3::operator[](std::size_t index) const{
         return z_;        
     }
     else{
-        throw std::invalid_argument("Invalid index");
+        throw std::out_of_range("Invalid index");
     }
 }
 

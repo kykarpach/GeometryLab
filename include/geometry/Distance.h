@@ -13,9 +13,15 @@ double distance(const Vec3& a, const Vec3& b);
 double distance_point_segment(const Vec2& p, const Segment2& s);
 double distance_point_segment(const Vec3& p, const Segment3& s);
 
+double distance_point_segment(const Segment2& s, const Vec2& p);
+double distance_point_segment(const Segment3& s, const Vec3& p);
 
 double distance_point_line(const Vec3& p, const Vec3& A0, const Vec3& A1);
 
 double distance_line_line(const Vec3& A0, const Vec3& A1, const Vec3& B0, const Vec3& B1);
+
+
+double distance_point_segment(const Segment2& s, const Vec2& p);
+double distance_point_segment(const Segment3& s, const Vec3& p);
 
 }
