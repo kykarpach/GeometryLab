@@ -13,6 +13,8 @@ public:
 
     explicit Polygon2(const std::vector<Vec2>& vertices);
 
+    const std::vector<Vec2>& vertices() const;
+
     std::size_t size() const;
     bool empty() const;
 
@@ -26,7 +28,7 @@ public:
     bool contains_point(const Vec2& p) const;
 
 private:
-    std::vector<Vec2> vertices_;
+    std::vector<Vec2> vertices_;//Веришины
 };
 
 } // namespace geom

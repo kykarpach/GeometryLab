@@ -1,4 +1,5 @@
 // Тест создан нейросетью. Автор проекта не ручается за полноту и идеальную корректность этих тестов.
+#include "geometry/ConvexHull2.h"
 #include "geometry/Polygon2.h"
 #include "geometry/AABB2.h"
 #include "geometry/Intersections.h"
@@ -17,6 +18,123 @@
 #include <optional>
 
 using namespace geom;
+
+
+void test_convex_answ() {
+    auto same_point = [](const geom::Vec2& a, const geom::Vec2& b) {
+        return geom::nearly_equal(a.x(), b.x()) &&
+               geom::nearly_equal(a.y(), b.y());
+    };
+
+    auto contains_point = [&](const std::vector<geom::Vec2>& points,
+                              const geom::Vec2& p) {
+        return std::any_of(points.begin(), points.end(),
+                           [&](const geom::Vec2& q) {
+                               return same_point(q, p);
+                           });
+    };
+
+    {
+        std::vector<geom::Vec2> points = {
+            {0, 0}, {1, 0}, {1, 1}, {0, 1},
+            {0.5, 0.5}, {0.25, 0.25}
+        };
+
+        geom::Polygon2 hull = geom::convex_answ(points);
+        const auto& v = hull.vertices();
+
+        assert(v.size() == 4);
+        assert(contains_point(v, {0, 0}));
+        assert(contains_point(v, {1, 0}));
+        assert(contains_point(v, {1, 1}));
+        assert(contains_point(v, {0, 1}));
+    }
+
+    {
+        std::vector<geom::Vec2> points = {
+            {0, 0}, {0, 0},
+            {1, 0}, {1, 0},
+            {1, 1}, {1, 1},
+            {0, 1}, {0, 1}
+        };
+
+        geom::Polygon2 hull = geom::convex_answ(points);
+        const auto& v = hull.vertices();
+
+        assert(v.size() == 4);
+        assert(contains_point(v, {0, 0}));
+        assert(contains_point(v, {1, 0}));
+        assert(contains_point(v, {1, 1}));
+        assert(contains_point(v, {0, 1}));
+    }
+
+    {
+        std::vector<geom::Vec2> points = {
+            {0, 0}, {2, 0}, {1, 2},
+            {1, 0.5}
+        };
+
+        geom::Polygon2 hull = geom::convex_answ(points);
+        const auto& v = hull.vertices();
+
+        assert(v.size() == 3);
+        assert(contains_point(v, {0, 0}));
+        assert(contains_point(v, {2, 0}));
+        assert(contains_point(v, {1, 2}));
+    }
+
+    {
+        std::vector<geom::Vec2> points = {
+            {0, 0}, {1, 0}, {2, 0},
+            {2, 1}, {1, 1}, {0, 1}
+        };
+
+        geom::Polygon2 hull = geom::convex_answ(points);
+        const auto& v = hull.vertices();
+
+        assert(v.size() == 4);
+        assert(contains_point(v, {0, 0}));
+        assert(contains_point(v, {2, 0}));
+        assert(contains_point(v, {2, 1}));
+        assert(contains_point(v, {0, 1}));
+
+        assert(!contains_point(v, {1, 0}));
+        assert(!contains_point(v, {1, 1}));
+    }
+
+    {
+        bool thrown = false;
+
+        try {
+            std::vector<geom::Vec2> points = {
+                {0, 0}, {1, 1}, {1, 1}
+            };
+
+            geom::convex_answ(points);
+        } catch (const std::invalid_argument&) {
+            thrown = true;
+        }
+
+        assert(thrown);
+    }
+
+    {
+        bool thrown = false;
+
+        try {
+            std::vector<geom::Vec2> points = {
+                {0, 0}, {1, 0}, {2, 0}, {3, 0}
+            };
+
+            geom::convex_answ(points);
+        } catch (const std::invalid_argument&) {
+            thrown = true;
+        }
+
+        assert(thrown);
+    }
+}
+
 
 void test_polygon2() {
     using namespace geom;
@@ -772,6 +890,7 @@ void test_segment2() {
 
 int main() {
     
+    test_convex_answ();
     test_polygon2();
     test_aabb2();
     test_intersect_segment3();

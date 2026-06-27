@@ -13,6 +13,10 @@ Polygon2::Polygon2(const std::vector<Vec2>& vertices){
     }
 }
 
+const std::vector<Vec2>& Polygon2::vertices() const{
+    return vertices_;
+}
+
 std::size_t Polygon2::size() const{
     return vertices_.size();
 }
@@ -47,7 +51,7 @@ double Polygon2::area() const {
     return 0.5 * std::abs(sum);
 }
 
-// Минимальныая коробка полностю влючающая в себя фигур
+// Минимальныая коробка полностю влючающая в себя фигуру Polygon2
 AABB2 Polygon2::bounding_box() const {
     AABB2 box(vertices_[0], vertices_[0]);
 

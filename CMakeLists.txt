@@ -16,6 +16,7 @@ add_library(geometry
     src/Intersections.cpp
     src/AABB2.cpp
     src/Polygon2.cpp
+    src/ConvexHull2.cpp
 )
 
 
